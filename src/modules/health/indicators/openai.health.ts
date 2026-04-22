@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { HealthIndicatorService } from '@nestjs/terminus';
-import { DatabaseService } from './database.service';
+import { OpenAIService } from '@/modules/openai';
 
 @Injectable()
-export class DatabaseHealthIndicator {
+export class OpenAIHealthIndicator {
 	constructor(
-		private readonly databaseService: DatabaseService,
+		private readonly openaiService: OpenAIService,
 		private readonly healthIndicatorService: HealthIndicatorService,
 	) {}
 
 	async isHealthy() {
-		const indicator = this.healthIndicatorService.check('database');
+		const indicator = this.healthIndicatorService.check('openai');
 
 		try {
-			await this.databaseService.query.execute('SELECT 1');
+			const client = this.openaiService.getClient();
+			await client.models.list();
 			return indicator.up();
 		} catch (error) {
 			return indicator.down({ message: (error as Error).message });

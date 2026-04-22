@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { HealthIndicatorService } from '@nestjs/terminus';
-import { OpenAIService } from './openai.service';
+import { RedisService } from '@/modules/redis';
 
 @Injectable()
-export class OpenAIHealthIndicator {
+export class RedisHealthIndicator {
 	constructor(
-		private readonly openaiService: OpenAIService,
+		private readonly redisService: RedisService,
 		private readonly healthIndicatorService: HealthIndicatorService,
 	) {}
 
 	async isHealthy() {
-		const indicator = this.healthIndicatorService.check('openai');
+		const indicator = this.healthIndicatorService.check('redis');
 
 		try {
-			const client = this.openaiService.getClient();
-			await client.models.list();
+			const client = this.redisService.getClient();
+			await client.ping();
 			return indicator.up();
 		} catch (error) {
 			return indicator.down({ message: (error as Error).message });

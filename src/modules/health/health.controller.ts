@@ -2,9 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@/common/decorators';
-import { DatabaseHealthIndicator } from '../database';
-import { RedisHealthIndicator } from '../redis';
-import { OpenAIHealthIndicator } from '../openai';
+import { DatabaseHealthIndicator, RedisHealthIndicator, OpenAIHealthIndicator } from './indicators';
 
 @ApiTags('Health')
 @Controller()
