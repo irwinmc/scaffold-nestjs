@@ -49,9 +49,6 @@ export class AppConfigService implements OnModuleInit {
 					connectTimeout: this.configService.get('database.connectTimeout'),
 				},
 				swagger: {
-					title: this.configService.get('swagger.title'),
-					description: this.configService.get('swagger.description'),
-					version: this.configService.get('swagger.version'),
 					enabled: this.configService.get('swagger.enabled', false),
 				},
 				cors: {

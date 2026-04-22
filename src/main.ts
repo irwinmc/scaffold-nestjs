@@ -8,7 +8,7 @@ import compress from '@fastify/compress';
 import { Logger as PinoLogger } from 'nestjs-pino';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
-import { AppConfigService, swaggerDocumentConfig } from '@/config';
+import { AppConfigService, swaggerConfig } from '@/config';
 import { TransformInterceptor } from '@/common/interceptors';
 import { JwtAuthGuard } from '@/common/guards';
 
@@ -47,7 +47,7 @@ async function bootstrap() {
 
 	// Swagger
 	if (config.swagger.enabled) {
-		const document = SwaggerModule.createDocument(app, swaggerDocumentConfig);
+		const document = SwaggerModule.createDocument(app, swaggerConfig);
 		SwaggerModule.setup('api-docs', app, document);
 		logger.log(`Swagger documentation: http://localhost:${port}/api-docs`);
 	}
