@@ -51,15 +51,21 @@ src/
 │
 ├── common/                          # 公共组件
 │   ├── decorators/
-│   │   └── public.decorator.ts      # @Public() 跳过认证
+│   │   ├── public.decorator.ts      # @Public() 跳过认证
+│   │   ├── current-user.decorator.ts # @CurrentUser() 提取当前用户
+│   │   └── roles.decorator.ts       # @Roles() 角色控制
 │   ├── filters/
 │   │   └── http-exception.filter.ts # 全局异常过滤器
 │   ├── guards/
-│   │   └── jwt-auth.guard.ts        # JWT 认证 Guard
+│   │   ├── jwt-auth.guard.ts        # JWT 认证 Guard
+│   │   └── roles.guard.ts           # 角色鉴权 Guard
 │   ├── interceptors/
-│   │   └── transform.interceptor.ts # 响应格式化
+│   │   ├── transform.interceptor.ts # 响应格式化
+│   │   └── timeout.interceptor.ts   # 请求超时控制
+│   ├── pipes/
+│   │   ├── trim.pipe.ts             # 自动 trim 字符串入参
+│   │   └── parse-int-id.pipe.ts     # 路径参数 ID 转 number
 │   ├── events/                      # 事件处理器
-│   ├── pipes/                       # 管道
 │   ├── services/                    # 公共服务
 │   └── utils/                       # 工具函数
 │
@@ -186,19 +192,55 @@ curl http://localhost:3300/api/v1/health
 
 返回 Terminus 标准格式，任一探测失败返回 HTTP 503。
 
-### 认证
+### 认证与权限
 
-全局 JWT Guard，使用 `@Public()` 装饰器跳过认证：
+全局 JWT Guard + Roles Guard，请求处理链：
+
+```
+JwtAuthGuard（认证）→ RolesGuard（角色鉴权）
+```
 
 ```ts
+// 跳过认证
 @Get('public')
 @Public()
 publicEndpoint() {}
 
-@Get('protected')
-// 默认需要 JWT
-protectedEndpoint() {}
+// 角色控制
+@Get('admin')
+@Roles('admin')
+adminOnly() {}
+
+// 获取当前用户
+@Get('profile')
+getProfile(@CurrentUser() user: RequestUser) {
+  return user;  // { userId, email, roles }
+}
+
+// 只取某个字段
+@Get('me')
+getMe(@CurrentUser('email') email: string) {
+  return { email };
+}
 ```
+
+签发 token 时需包含 roles：
+
+```ts
+jwtService.sign({ sub: userId, email, roles: ['admin'] });
+```
+
+### 全局管道与拦截器
+
+| 组件 | 作用 |
+|------|------|
+| `TrimPipe` | 全局，自动递归 trim 所有字符串入参 |
+| `ZodValidationPipe` | 全局，Zod Schema 校验请求参数 |
+| `ParseIntIdPipe` | 路由级，路径参数 `:id` 转 number，非法值返回 400 |
+| `TransformInterceptor` | 全局，统一响应格式 `{ data, statusCode, message, timestamp }` |
+| `TimeoutInterceptor` | 全局，请求超时控制（默认 30s），超时返回 408 |
+
+管道执行顺序：`TrimPipe` → `ZodValidationPipe`（先 trim 再校验）
 
 ### 数据库
 

@@ -9,8 +9,9 @@ import { Logger as PinoLogger } from 'nestjs-pino';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { AppConfigService } from '@/config';
-import { TransformInterceptor } from '@/common/interceptors';
-import { JwtAuthGuard } from '@/common/guards';
+import { TransformInterceptor, TimeoutInterceptor } from '@/common/interceptors';
+import { JwtAuthGuard, RolesGuard } from '@/common/guards';
+import { TrimPipe } from '@/common/pipes';
 
 async function bootstrap() {
 	const adapter = new FastifyAdapter({ logger: false });
@@ -41,9 +42,9 @@ async function bootstrap() {
 		exclude: ['/'],
 	});
 
-	app.useGlobalInterceptors(new TransformInterceptor());
-	app.useGlobalPipes(new ZodValidationPipe());
-	app.useGlobalGuards(new JwtAuthGuard(reflector, config, jwtService));
+	app.useGlobalInterceptors(new TransformInterceptor(), new TimeoutInterceptor(30_000));
+	app.useGlobalPipes(new TrimPipe(), new ZodValidationPipe());
+	app.useGlobalGuards(new JwtAuthGuard(reflector, config, jwtService), new RolesGuard(reflector));
 
 	// Swagger
 	if (config.swagger.enabled) {
