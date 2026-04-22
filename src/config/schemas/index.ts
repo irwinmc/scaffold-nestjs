@@ -7,10 +7,8 @@ import { LoggerConfigSchema } from './logger.schema';
 import { SwaggerConfigSchema } from './swagger.schema';
 import { CorsConfigSchema } from './cors.schema';
 import { OpenAIConfigSchema } from './openai.schema';
+import { DatabaseConfigSchema } from './database.schema';
 
-/**
- * 完整的应用配置 Schema
- */
 export const FullConfigSchema = z.object({
 	app: AppConfigSchema,
 	security: SecurityConfigSchema,
@@ -20,11 +18,11 @@ export const FullConfigSchema = z.object({
 	swagger: SwaggerConfigSchema,
 	cors: CorsConfigSchema,
 	openai: OpenAIConfigSchema,
+	database: DatabaseConfigSchema,
 });
 
 export type FullConfig = z.infer<typeof FullConfigSchema>;
 
-// 导出所有 schemas
 export * from './app.schema';
 export * from './security.schema';
 export * from './jwt.schema';
@@ -33,3 +31,4 @@ export * from './logger.schema';
 export * from './swagger.schema';
 export * from './cors.schema';
 export * from './openai.schema';
+export * from './database.schema';
