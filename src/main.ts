@@ -2,13 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
 import compress from '@fastify/compress';
 import { Logger as PinoLogger } from 'nestjs-pino';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
-import { AppConfigService, swaggerConfig } from '@/config';
+import { AppConfigService } from '@/config';
 import { TransformInterceptor } from '@/common/interceptors';
 import { JwtAuthGuard } from '@/common/guards';
 
@@ -47,7 +47,14 @@ async function bootstrap() {
 
 	// Swagger
 	if (config.swagger.enabled) {
-		const document = SwaggerModule.createDocument(app, swaggerConfig);
+		const swaggerOptions = new DocumentBuilder()
+			.setTitle(config.swagger.title)
+			.setDescription(config.swagger.description)
+			.setVersion(config.swagger.version)
+			.addTag('Health', 'Health Check Endpoints')
+			.addBearerAuth()
+			.build();
+		const document = SwaggerModule.createDocument(app, swaggerOptions);
 		SwaggerModule.setup('api-docs', app, document);
 		logger.log(`Swagger documentation: http://localhost:${port}/api-docs`);
 	}

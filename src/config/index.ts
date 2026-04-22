@@ -13,4 +13,4 @@ export { default as databaseConfig } from './database.config';
 export { default as corsConfig } from './cors.config';
 export { default as openaiConfig } from './openai.config';
 export { pinoConfig, pinoFileConfig } from './logger.config';
-export { swaggerConfig } from './swagger.config';
+export { default as swaggerConfig } from './swagger.config';

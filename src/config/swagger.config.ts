@@ -1,9 +1,13 @@
-import { DocumentBuilder } from '@nestjs/swagger';
+import { registerAs } from '@nestjs/config';
+import { SwaggerConfigSchema } from './schemas';
 
-export const swaggerConfig = new DocumentBuilder()
-	.setTitle('Scaffold Server API')
-	.setDescription('Scaffold Server API Documentation')
-	.setVersion('1.0')
-	.addTag('Health', 'Health Check Endpoints')
-	.addBearerAuth()
-	.build();
+export default registerAs('swagger', () => {
+	const config = {
+		title: process.env.SWAGGER_TITLE,
+		description: process.env.SWAGGER_DESCRIPTION,
+		version: process.env.SWAGGER_VERSION,
+		enabled: process.env.SWAGGER_ENABLED === 'true',
+	};
+
+	return SwaggerConfigSchema.parse(config);
+});
