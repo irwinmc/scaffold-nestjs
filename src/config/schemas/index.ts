@@ -26,7 +26,6 @@ export * from './security.schema';
 export * from './jwt.schema';
 export * from './redis.schema';
 export * from './database.schema';
-export * from './logger.schema';
 export * from './cors.schema';
 export * from './openai.schema';
 export * from './swagger.schema';
