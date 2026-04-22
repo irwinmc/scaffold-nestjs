@@ -6,7 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 
 import { AllExceptionsFilter } from './common/filters';
 import { ConfigModule, AppConfigService, pinoConfig } from './config';
-import { HealthModule, JobsModule, RedisModule } from './modules';
+import { HealthModule, JobsModule, RedisModule, DatabaseModule } from './modules';
 
 @Module({
 	imports: [
@@ -25,6 +25,7 @@ import { HealthModule, JobsModule, RedisModule } from './modules';
 		HealthModule,
 		JobsModule,
 		RedisModule,
+		DatabaseModule,
 	],
 	providers: [
 		{
