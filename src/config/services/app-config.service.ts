@@ -40,10 +40,13 @@ export class AppConfigService implements OnModuleInit {
 				database: {
 					host: this.configService.get('database.host'),
 					port: this.configService.get('database.port'),
-					username: this.configService.get('database.username'),
+					user: this.configService.get('database.user'),
 					password: this.configService.get('database.password'),
 					database: this.configService.get('database.database'),
 					ssl: this.configService.get('database.ssl', false),
+					max: this.configService.get('database.max'),
+					idleTimeout: this.configService.get('database.idleTimeout'),
+					connectTimeout: this.configService.get('database.connectTimeout'),
 				},
 				cors: {
 					origin: this.configService.get('cors.origin'),
