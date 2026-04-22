@@ -48,6 +48,12 @@ export class AppConfigService implements OnModuleInit {
 					idleTimeout: this.configService.get('database.idleTimeout'),
 					connectTimeout: this.configService.get('database.connectTimeout'),
 				},
+				swagger: {
+					title: this.configService.get('swagger.title'),
+					description: this.configService.get('swagger.description'),
+					version: this.configService.get('swagger.version'),
+					enabled: this.configService.get('swagger.enabled', false),
+				},
 				cors: {
 					origin: this.configService.get('cors.origin'),
 					methods: this.configService.get('cors.methods'),
@@ -84,6 +90,9 @@ export class AppConfigService implements OnModuleInit {
 	}
 	get database() {
 		return this._config.database;
+	}
+	get swagger() {
+		return this._config.swagger;
 	}
 	get cors() {
 		return this._config.cors;

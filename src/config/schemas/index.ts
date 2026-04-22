@@ -6,6 +6,7 @@ import { RedisConfigSchema } from './redis.schema';
 import { DatabaseConfigSchema } from './database.schema';
 import { CorsConfigSchema } from './cors.schema';
 import { OpenAIConfigSchema } from './openai.schema';
+import { SwaggerConfigSchema } from './swagger.schema';
 
 export const FullConfigSchema = z.object({
 	app: AppConfigSchema,
@@ -15,6 +16,7 @@ export const FullConfigSchema = z.object({
 	database: DatabaseConfigSchema,
 	cors: CorsConfigSchema,
 	openai: OpenAIConfigSchema,
+	swagger: SwaggerConfigSchema,
 });
 
 export type FullConfig = z.infer<typeof FullConfigSchema>;
@@ -25,6 +27,6 @@ export * from './jwt.schema';
 export * from './redis.schema';
 export * from './database.schema';
 export * from './logger.schema';
-export * from './swagger.schema';
 export * from './cors.schema';
 export * from './openai.schema';
+export * from './swagger.schema';

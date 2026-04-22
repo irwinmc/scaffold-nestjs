@@ -9,6 +9,7 @@ import redisConfig from './redis.config';
 import databaseConfig from './database.config';
 import corsConfig from './cors.config';
 import openaiConfig from './openai.config';
+import swaggerConfig from './swagger.config';
 
 /**
  * 全局配置模块
@@ -20,7 +21,7 @@ import openaiConfig from './openai.config';
 	imports: [
 		NestConfigModule.forRoot({
 			isGlobal: true,
-			load: [appConfig, securityConfig, jwtConfig, redisConfig, databaseConfig, corsConfig, openaiConfig],
+			load: [appConfig, securityConfig, jwtConfig, redisConfig, databaseConfig, corsConfig, openaiConfig, swaggerConfig],
 			envFilePath: ['.env'],
 		}),
 	],

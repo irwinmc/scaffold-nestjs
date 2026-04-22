@@ -10,14 +10,13 @@ export class AppService {
 		const env = this.config.app.nodeEnv;
 
 		return {
-			name: 'Ops Server',
-			version: '1.0.0',
+			name: 'Scaffold Server',
+			version: '0.0.1',
 			environment: env,
 			apiPrefix: `/${apiPrefix}`,
 			endpoints: {
 				swagger: '/api-docs',
 				health: `/${apiPrefix}/health`,
-				users: `/${apiPrefix}/users`,
 			},
 			timestamp: new Date().toISOString(),
 		};
