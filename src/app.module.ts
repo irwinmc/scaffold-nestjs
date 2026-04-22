@@ -6,7 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 
 import { AllExceptionsFilter } from './common/filters';
 import { ConfigModule, AppConfigService, pinoConfig } from './config';
-import { HealthModule, JobsModule, RedisModule, DatabaseModule } from './modules';
+import { HealthModule, JobsModule, RedisModule, DatabaseModule, OpenAIModule } from './modules';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -28,6 +28,7 @@ import { AppService } from './app.service';
 		JobsModule,
 		RedisModule,
 		DatabaseModule,
+		OpenAIModule,
 	],
 	controllers: [AppController],
 	providers: [
