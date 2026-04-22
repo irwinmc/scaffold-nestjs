@@ -1,98 +1,234 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Scaffold NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+基于 NestJS + Fastify 的企业级后端脚手架，面向 AI Agent 开发场景。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 技术栈
 
-## Description
+| 类别 | 技术 |
+|------|------|
+| 框架 | NestJS 11 + Fastify |
+| 语言 | TypeScript 5 |
+| 数据库 | PostgreSQL + Drizzle ORM |
+| 缓存 | Redis (ioredis) |
+| 认证 | JWT + 全局 Guard |
+| 校验 | Zod + nestjs-zod |
+| 日志 | Pino + pino-pretty |
+| 文档 | Swagger / OpenAPI |
+| AI | OpenAI SDK (Chat Completion, Streaming, Embeddings) |
+| 健康检查 | @nestjs/terminus |
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 项目结构
 
-## Project setup
-
-```bash
-$ pnpm install
+```
+src/
+├── main.ts                          # 应用入口
+├── app.module.ts                    # 根模块
+├── app.controller.ts                # 根路由（API 信息）
+├── app.service.ts
+│
+├── config/                          # 配置管理
+│   ├── config.module.ts             # 全局配置模块
+│   ├── services/
+│   │   └── app-config.service.ts    # 统一配置服务（Zod 校验）
+│   ├── schemas/                     # Zod Schema 定义
+│   │   ├── app.schema.ts
+│   │   ├── database.schema.ts
+│   │   ├── redis.schema.ts
+│   │   ├── jwt.schema.ts
+│   │   ├── security.schema.ts
+│   │   ├── cors.schema.ts
+│   │   ├── openai.schema.ts
+│   │   └── swagger.schema.ts
+│   ├── app.config.ts                # 配置工厂（registerAs）
+│   ├── database.config.ts
+│   ├── redis.config.ts
+│   ├── jwt.config.ts
+│   ├── security.config.ts
+│   ├── cors.config.ts
+│   ├── openai.config.ts
+│   ├── swagger.config.ts
+│   └── logger.config.ts             # Pino 配置
+│
+├── common/                          # 公共组件
+│   ├── decorators/
+│   │   └── public.decorator.ts      # @Public() 跳过认证
+│   ├── filters/
+│   │   └── http-exception.filter.ts # 全局异常过滤器
+│   ├── guards/
+│   │   └── jwt-auth.guard.ts        # JWT 认证 Guard
+│   ├── interceptors/
+│   │   └── transform.interceptor.ts # 响应格式化
+│   ├── events/                      # 事件处理器
+│   ├── pipes/                       # 管道
+│   ├── services/                    # 公共服务
+│   └── utils/                       # 工具函数
+│
+└── modules/                         # 业务模块
+    ├── database/                    # 数据库模块（Drizzle ORM）
+    │   ├── database.service.ts
+    │   └── schemas/
+    │       └── users.schema.ts      # 用户表定义
+    ├── redis/                       # Redis 模块（多客户端）
+    │   └── redis.service.ts
+    ├── openai/                      # OpenAI 模块
+    │   ├── openai.service.ts        # Chat / Streaming / Embeddings
+    │   ├── openai.exception.ts      # 自定义异常
+    │   └── types.ts                 # 选项类型
+    ├── health/                      # 健康检查模块
+    │   ├── health.controller.ts
+    │   └── indicators/              # 健康指示器
+    │       ├── database.health.ts
+    │       ├── redis.health.ts
+    │       └── openai.health.ts
+    └── jobs/                        # 定时任务模块
+        ├── jobs.service.ts
+        └── handlers/
+            └── startup.handler.ts
 ```
 
-## Compile and run the project
+## 快速开始
+
+### 环境要求
+
+- Node.js >= 18
+- pnpm
+- PostgreSQL
+- Redis
+
+### 安装
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
 ```
 
-## Run tests
+### 配置
+
+复制环境变量文件并填写配置：
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+关键字段说明见 `.env.example`。
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 启动
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# 开发模式（热重载）
+pnpm start:dev
+
+# 生产模式
+pnpm build && pnpm start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+启动后访问：
 
-## Resources
+- API: `http://localhost:3300/api/v1`
+- Swagger: `http://localhost:3300/api-docs`（需设置 `SWAGGER_ENABLED=true`）
+- 健康检查: `http://localhost:3300/api/v1/health`
 
-Check out a few resources that may come in handy when working with NestJS:
+## 核心功能
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 配置管理
 
-## Support
+所有配置通过 `AppConfigService` 访问，具有完整的类型推导和 Zod 校验。配置流程：
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+.env → registerAs 工厂（Schema.parse） → ConfigService → AppConfigService（FullConfigSchema 校验）
+```
 
-## Stay in touch
+在任何地方注入使用：
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```ts
+constructor(config: AppConfigService) {
+  const port = config.app.port;
+  const dbHost = config.database.host;
+}
+```
+
+### OpenAI 模块
+
+全局注入 `OpenAIService`，支持 Chat Completion、Streaming、Embeddings：
+
+```ts
+import { OpenAIService } from '@/modules/openai';
+
+// Chat Completion
+const response = await this.openai.chatCompletion([
+  { role: 'user', content: 'Hello' },
+]);
+
+// Streaming
+const stream = await this.openai.chatCompletionStream([
+  { role: 'user', content: 'Hello' },
+]);
+for await (const chunk of stream) {
+  const delta = chunk.choices[0]?.delta?.content;
+  if (delta) yield delta;
+}
+
+// Embeddings
+const embedding = await this.openai.createEmbedding('text to embed', {
+  dimensions: 512,
+});
+
+// 使用原始 SDK
+const client = this.openai.getClient();
+```
+
+### 健康检查
+
+基于 `@nestjs/terminus`，自动探测 Database、Redis、OpenAI 的连通状态：
+
+```bash
+curl http://localhost:3300/api/v1/health
+```
+
+返回 Terminus 标准格式，任一探测失败返回 HTTP 503。
+
+### 认证
+
+全局 JWT Guard，使用 `@Public()` 装饰器跳过认证：
+
+```ts
+@Get('public')
+@Public()
+publicEndpoint() {}
+
+@Get('protected')
+// 默认需要 JWT
+protectedEndpoint() {}
+```
+
+### 数据库
+
+Drizzle ORM，支持事务：
+
+```ts
+constructor(private readonly db: DatabaseService) {}
+
+// 查询
+const users = await this.db.query.users.findMany();
+
+// 事务
+await this.db.transaction(async (tx) => {
+  await tx.insert(users).values({ email: 'a@b.com', ... });
+});
+```
+
+## 脚本
+
+```bash
+pnpm build          # 编译
+pnpm start:dev      # 开发模式
+pnpm start:prod     # 生产模式
+pnpm lint           # ESLint 检查
+pnpm format         # Prettier 格式化
+pnpm test           # 单元测试
+pnpm test:e2e       # E2E 测试
+pnpm test:cov       # 测试覆盖率
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED
