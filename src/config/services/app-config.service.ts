@@ -62,9 +62,6 @@ export class AppConfigService implements OnModuleInit {
 					apiKey: this.configService.get('openai.apiKey'),
 					baseURL: this.configService.get('openai.baseURL'),
 					model: this.configService.get('openai.model'),
-					translationBaseURL: this.configService.get('openai.translationBaseURL'),
-					translationApiKey: this.configService.get('openai.translationApiKey'),
-					translationModel: this.configService.get('openai.translationModel'),
 				},
 			});
 
