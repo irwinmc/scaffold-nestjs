@@ -7,7 +7,7 @@ function validConfig(): Record<string, unknown> {
 		'app.nodeEnv': 'test',
 		'app.port': 3000,
 		'app.apiPrefix': 'api/v1',
-		'app.apiKey': undefined,
+		'app.apiKey': '',
 
 		'security.rateLimit.ttl': 60,
 		'security.rateLimit.limit': 100,
@@ -18,7 +18,7 @@ function validConfig(): Record<string, unknown> {
 
 		'redis.host': 'localhost',
 		'redis.port': 6379,
-		'redis.password': undefined,
+		'redis.password': '',
 		'redis.db': 3,
 		'redis.ttl': 3600,
 
