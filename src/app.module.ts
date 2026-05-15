@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
 
@@ -13,6 +14,13 @@ import { AppService } from './app.service';
 @Module({
 	imports: [
 		ConfigModule,
+		JwtModule.registerAsync({
+			inject: [AppConfigService],
+			useFactory: (config: AppConfigService) => ({
+				secret: config.jwt.secret,
+				signOptions: { expiresIn: config.jwt.expiresIn },
+			}),
+		}),
 		ScheduleModule.forRoot(),
 		ThrottlerModule.forRootAsync({
 			inject: [AppConfigService],

@@ -1,16 +1,14 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FullConfigSchema, FullConfig } from '../schemas';
 
 @Injectable()
-export class AppConfigService implements OnModuleInit {
+export class AppConfigService {
 	private readonly log = new Logger(AppConfigService.name);
 
-	private _config!: FullConfig;
+	private _config: FullConfig;
 
-	constructor(private readonly configService: ConfigService) {}
-
-	onModuleInit() {
+	constructor(private readonly configService: ConfigService) {
 		try {
 			this._config = FullConfigSchema.parse({
 				app: {

@@ -21,7 +21,16 @@ import swaggerConfig from './swagger.config';
 	imports: [
 		NestConfigModule.forRoot({
 			isGlobal: true,
-			load: [appConfig, securityConfig, jwtConfig, redisConfig, databaseConfig, corsConfig, openaiConfig, swaggerConfig],
+			load: [
+				appConfig,
+				securityConfig,
+				jwtConfig,
+				redisConfig,
+				databaseConfig,
+				corsConfig,
+				openaiConfig,
+				swaggerConfig,
+			],
 			envFilePath: ['.env'],
 		}),
 	],
