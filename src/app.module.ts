@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bullmq';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
@@ -30,6 +31,17 @@ import { AppService } from './app.service';
 					limit: config.security.rateLimit.limit,
 				},
 			],
+		}),
+		BullModule.forRootAsync({
+			inject: [AppConfigService],
+			useFactory: (config: AppConfigService) => ({
+				connection: {
+					host: config.redis.host,
+					port: config.redis.port,
+					password: config.redis.password,
+					db: config.redis.db,
+				},
+			}),
 		}),
 		LoggerModule.forRoot(pinoConfig),
 		HealthModule,

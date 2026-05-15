@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { JobsService } from './jobs.service';
-import { StartupHandler } from './handlers';
+import { StartupHandler, TaskHandler } from './handlers';
 
 @Module({
-	imports: [],
-	providers: [JobsService, StartupHandler],
+	imports: [
+		BullModule.registerQueue({
+			name: 'tasks',
+		}),
+	],
+	providers: [JobsService, StartupHandler, TaskHandler],
 	exports: [JobsService],
 })
 export class JobsModule {}
