@@ -15,6 +15,7 @@
 | 权限 | 角色鉴权（RolesGuard） |
 | 限流 | @nestjs/throttler |
 | 校验 | Zod + nestjs-zod |
+| 密码 | bcryptjs |
 | 日志 | nestjs-pino（Pino） |
 | 文档 | Swagger / OpenAPI |
 | 安全 | Helmet + Compression |
@@ -110,13 +111,23 @@ src/
     │       ├── database.health.ts
     │       ├── redis.health.ts
     │       └── openai.health.ts
-    └── jobs/                             # 定时任务模块
+    ├── jobs/                             # 定时任务模块
+    │   ├── index.ts
+    │   ├── jobs.module.ts
+    │   ├── jobs.service.ts
+    │   └── handlers/
+    │       ├── index.ts
+    │       ├── startup.handler.ts
+    │       └── task.handler.ts
+    └── auth/                             # 认证模块
         ├── index.ts
-        ├── jobs.module.ts
-        ├── jobs.service.ts
-        └── handlers/
+        ├── auth.module.ts
+        ├── auth.controller.ts            # POST /auth/register, /auth/login
+        ├── auth.service.ts               # bcrypt 哈希 + JWT 签发
+        └── dto/
             ├── index.ts
-            └── startup.handler.ts
+            ├── login.dto.ts
+            └── register.dto.ts
 ```
 
 ## 快速开始
@@ -276,6 +287,22 @@ curl http://localhost:3300/api/v1/health
 
 ```
 JwtAuthGuard（认证）→ RolesGuard（角色鉴权）
+```
+
+内置 Auth 模块，开箱即用：
+
+```bash
+# 注册
+curl -X POST http://localhost:3300/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","username":"alice","password":"123456"}'
+
+# 登录
+curl -X POST http://localhost:3300/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"123456"}'
+
+# 响应 { user: { id, email, username }, accessToken, expiresIn }
 ```
 
 ```ts
