@@ -7,6 +7,10 @@ export class TrimPipe implements PipeTransform {
 			return value.trim();
 		}
 
+		if (Array.isArray(value)) {
+			return value.map(item => (typeof item === 'string' ? item.trim() : item));
+		}
+
 		if (typeof value === 'object' && value !== null) {
 			return this.trimDeep(value as Record<string, unknown>);
 		}
