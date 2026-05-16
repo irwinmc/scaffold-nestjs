@@ -60,11 +60,46 @@ export class AuthService {
 		};
 	}
 
+	async refresh(refreshToken: string) {
+		try {
+			const payload = await this.jwtService.verifyAsync(refreshToken, {
+				secret: this.config.jwt.secret,
+			});
+
+			const tokens = this.signTokens(payload.sub, payload.email, payload.roles ?? []);
+			return tokens;
+		} catch {
+			throw new UnauthorizedException('Invalid refresh token');
+		}
+	}
+
+	async getProfile(userId: string) {
+		const rows = await this.db.query
+			.select({
+				id: users.id,
+				email: users.email,
+				username: users.username,
+				createdAt: users.createdAt,
+			})
+			.from(users)
+			.where(eq(users.id, userId))
+			.limit(1);
+
+		const user = rows[0];
+
+		if (!user) {
+			throw new UnauthorizedException('User not found');
+		}
+
+		return user;
+	}
+
 	private signTokens(userId: string, email: string, roles: string[]) {
 		const payload = { sub: userId, email, roles };
 
 		return {
 			accessToken: this.jwtService.sign(payload),
+			refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
 			expiresIn: this.config.jwt.expiresIn,
 		};
 	}
